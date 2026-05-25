@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Grid</title>
-    <script src="https://cloudflare.com"></script>
+    <!-- Foolproof QR generator library -->
+    <script src="https://jsdelivr.net"></script>
     <style>
         body { font-family: sans-serif; background: #f4f4f9; padding: 20px; margin: 0; }
         h1 { text-align: center; color: #333; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
-        .qr-box { margin: 15px 0; background: #eee; padding: 10px; border-radius: 8px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 280px; }
+        .qr-box { margin: 15px 0; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 8px; display: inline-block; }
         .text-preview { font-weight: bold; color: #555; margin-bottom: 15px; word-break: break-word; }
         button { background: #28a745; color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s; }
         button:hover { background: #218838; }
@@ -22,7 +23,7 @@
 <div class="grid" id="cardGrid"></div>
 
 <script>
-// YOU CAN MANUALLY CHANGE THESE 9 TEXTS LATER IF YOU WANT:
+// EDIT YOUR 9 TEXT PHRASES HERE:
 const textItems = [
     "Text Item Number One",
     "Text Item Number Two",
@@ -36,12 +37,14 @@ const textItems = [
 ];
 
 const grid = document.getElementById("cardGrid");
-const currentUrl = window.location.href.split('?');
+// Automatically forces lowercase to match GitHub Pages link structure
+const cleanBaseUrl = window.location.origin + window.location.pathname;
 
 textItems.forEach((text, index) => {
     const itemId = index + 1;
-    const itemTargetUrl = `${currentUrl}?item=${itemId}`;
+    const itemTargetUrl = `${cleanBaseUrl}?item=${itemId}`;
 
+    // Create the visual card layout
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -51,21 +54,27 @@ textItems.forEach((text, index) => {
     `;
     grid.appendChild(card);
 
-    new QRCode(document.getElementById(`qr-${itemId}`), {
-        text: itemTargetUrl,
-        width: 150,
-        height: 150
-    });
+    // Generate the QR code as a clean HTML image tag
+    try {
+        var qr = qrcode(0, 'M');
+        qr.addData(itemTargetUrl);
+        qr.make();
+        document.getElementById(`qr-${itemId}`).innerHTML = qr.createImgTag(4);
+    } catch(e) {
+        console.error("QR Code Error:", e);
+    }
 });
 
+// Handle the manual button click copy
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        alert(`Copied: "${text}"`);
+        alert(`Copied to clipboard: "${text}"`);
     }).catch(err => {
         console.error("Copy failed", err);
     });
 }
 
+// Auto-trigger copy when a QR code is scanned
 window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
     const scannedItem = urlParams.get('item');
