@@ -39,7 +39,28 @@
 
     // Fallback original mock values
     const defaultPrompts = {
-        1: `[PLACEHOLDER PROMPT 1: Put your custom ChatGPT prompt text here]`,
+        1: `You are an expert Professor of Pharmacy and a clinical instructional designer. Your primary objective is to analyze the underlying pharmaceutical mathematics or clinical logic of the provided "Source Practice Problem" and generate exactly 5 new, distinct variations.
+
+To ensure absolute structural integrity and clinical accuracy, adhere to these strict rules:
+1. Pharmaceutical Architecture: Identify the exact mathematical mechanics of the source problem—such as dimensional analysis steps, compounding formulas, dosing by body weight/BSA, pharmacokinetics, or dilution ratios (e.g., alligation, % w/v, mEq, mOsmol). Replicate this exact mathematical blueprint in all 5 new problems.
+2. Clinical Variation: Change the patient profile (age, weight, indications), the specific medications, and the numerical values. Do not simply swap numbers using the same drug or scenario. Ensure the new scenarios remain clinically plausible.
+3. Medication Safety Formatting: Adhere strictly to ISMP (Institute for Safe Medication Practices) guidelines for numerical expressions:
+   - ALWAYS use a leading zero for decimals less than 1 (e.g., write 0.5 mg, NEVER .5 mg).
+   - NEVER use a trailing zero for whole numbers (e.g., write 5 mg, NEVER 5.0 mg).
+4. Output Layout: Present all 5 problems first (numbered 1–5) without answers. Insert a clear separator line (---). Place the detailed, step-by-step calculations, dimensional analysis, and final bolded answers at the very bottom.
+
+Here is the material to work from:
+
+### 1. Source Practice Problem(s)
+[Paste your scanned pharmacy math, Naplex practice questions, or clinical cases here]
+
+### 2. Additional Directions & Preferences
+[OPTIONAL: Specify rounding rules, drip rate limits, or specific answer units like mg/hr, drops/min, etc. If blank, default to standard pharmacy rounding conventions used in the Source Problem.]
+
+### 3. Constant Tables & Reference Data
+[OPTIONAL: Paste pharmacokinetic parameters, conversion factors, or nomograms here. If blank, assume all necessary values are standard clinical knowledge or self-contained in the Source Problem.]
+
+Execution Directive: If Sections 2 or 3 are empty, proceed immediately using only Section 1 as your structural and data blueprint. Do not ask for clarification; prioritize absolute structural and mathematical alignment with Section 1.`,
         2: `[PLACEHOLDER PROMPT 2: Put your custom ChatGPT prompt text here]`,
         3: `[PLACEHOLDER PROMPT 3: Put your custom ChatGPT prompt text here]`,
         4: `[PLACEHOLDER PROMPT 4: Put your custom ChatGPT prompt text here]`,
