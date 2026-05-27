@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,6 +89,9 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
             const block = document.createElement('div');
             block.className = "bg-[#161b26] border border-[#26354a] rounded-xl p-5 hover:border-[#3b5273] transition-all relative group";
             
+            // Check display text: If it's Slot 1, always reflect the defaultPrompts version on interface
+            const displayText = (id == 1) ? defaultPrompts[1] : promptDatabase[id];
+            
             if (isAdminAuthenticated) {
                 // Editable Content Formats for Administrators
                 block.innerHTML = `
@@ -98,7 +102,7 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
                         <i class="fa-solid fa-pen text-[#e0af68]"></i>
                     </div>
                     <h3 class="text-sm font-bold text-[#e1e6f0] mb-2">Prompt ${id}</h3>
-                    <textarea id="editor-${id}" class="w-full h-32 bg-[#0f141c] rounded p-2 border border-[#26354a] text-xs font-mono text-[#9ece6a] focus:outline-none focus:border-[#e0af68] resize-none">${promptDatabase[id]}</textarea>
+                    <textarea id="editor-${id}" class="w-full h-32 bg-[#0f141c] rounded p-2 border border-[#26354a] text-xs font-mono text-[#9ece6a] focus:outline-none focus:border-[#e0af68] resize-none">${displayText}</textarea>
                 `;
             } else {
                 // Standard Public Display/One-Click Formats
@@ -113,7 +117,7 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
                     </div>
                     <h3 class="text-sm font-bold text-[#e1e6f0] mb-2">Prompt ${id}</h3>
                     <div class="bg-[#0f141c] rounded p-2 border border-[#1e2738]">
-                        <p class="text-[11px] font-mono text-[#9ece6a] line-clamp-4 whitespace-pre-wrap">${promptDatabase[id]}</p>
+                        <p class="text-[11px] font-mono text-[#9ece6a] line-clamp-4 whitespace-pre-wrap">${displayText}</p>
                     </div>
                 `;
             }
@@ -126,7 +130,7 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
         const urlParams = new URLSearchParams(window.location.search);
         const promptTargetId = urlParams.get('id');
 
-        if (promptTargetId && promptDatabase[promptTargetId]) {
+        if (promptTargetId && (promptTargetId == 1 || promptDatabase[promptTargetId])) {
             // SCANNED VIA QR CODE: Create action gesture overlay block bypass
             const overlay = document.createElement('div');
             overlay.className = "fixed inset-0 bg-[#0f141c]/95 backdrop-blur-md flex flex-col items-center justify-center z-50 p-6";
@@ -241,7 +245,7 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
 
     // Secure execution context tied directly to button click handler
     window.executeSecureCopy = function(id) {
-        const text = promptDatabase[id];
+        const text = (id == 1) ? defaultPrompts[1] : promptDatabase[id];
         navigator.clipboard.writeText(text).then(() => {
             document.getElementById('gestureOverlay').remove();
             statusAlert.className = "mb-6 p-4 rounded-xl text-center font-medium border text-sm bg-[#1b2b24] border-[#2e5c44] text-[#a3e635]";
@@ -252,7 +256,8 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
 
     // Card fallback manual backup option
     window.manualCopy = function(id) {
-        navigator.clipboard.writeText(promptDatabase[id]).then(() => {
+        const text = (id == 1) ? defaultPrompts[1] : promptDatabase[id];
+        navigator.clipboard.writeText(text).then(() => {
             statusAlert.className = "mb-6 p-4 rounded-xl text-center font-medium border text-sm bg-[#1b2b24] border-[#2e5c44] text-[#a3e635]";
             statusMessage.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Prompt #${id} manual copy successful!`;
             statusAlert.classList.remove('hidden');
@@ -264,3 +269,5 @@ Execution Directive: If Sections 2 or 3 are empty, proceed immediately using onl
 </script>
 </body>
 </html>
+
+```
